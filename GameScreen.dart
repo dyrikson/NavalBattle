@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nv/logic.dart';
 
+
 class GameBackGround extends StatelessWidget {
   final Ships ship;
   const GameBackGround({super.key, required this.ship});
