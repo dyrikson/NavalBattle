@@ -4,18 +4,16 @@ import 'package:nv/logic.dart';
 class Field extends StatelessWidget {
   final int gridSize;
   final double cellSize;
-  final List<bool> ships;
-  final List<bool>? hits;
   final bool playerRecognition;
+  final List<CellState> board;
   final void Function(int) onCellTap;
   const Field({
     super.key,
     required this.gridSize,
     required this.cellSize,
-    required this.ships,
-    this.hits,
     required this.playerRecognition,
     required this.onCellTap,
+    required this.board,
   });
   @override
   Widget build(BuildContext context) {
@@ -26,14 +24,11 @@ class Field extends StatelessWidget {
       ),
       itemCount: gridSize * gridSize,
       itemBuilder: (context, index) {
-        bool isShip = ships[index];
-        bool isHit = hits != null && hits![index];
         return GridCell(
           index: index,
           size: cellSize,
-          isShip: isShip,
-          isHit: isHit,
           playerRecognition: playerRecognition,
+          board: board,
           onTap: () => onCellTap(index),
         );
       },
@@ -43,20 +38,25 @@ class Field extends StatelessWidget {
 class GridCell extends StatelessWidget {
   final int index;
   final double size;
-  final bool isShip;
-  final bool isHit;
   final bool playerRecognition;
   final VoidCallback onTap;
-  GridCell({
+  final List<CellState> board;
+  const GridCell({
     super.key,
     required this.index,
     required this.size,
-    required this.isShip,
-    required this.isHit,
     required this.playerRecognition,
     required this.onTap,
+    required this.board,
   });
-  var field = FieldLogic();
+  Color colorSwitch(List<CellState> board){
+    switch (board[index]) {
+      case CellState.empty: return Colors.transparent;
+      case CellState.ship: return Colors.grey;
+      case CellState.hit: return Colors.red;
+      case CellState.miss: return Colors.white;
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -66,7 +66,7 @@ class GridCell extends StatelessWidget {
         height: size,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black, width: 1.2),
-          color: field.getCellColor(isHit, isShip, playerRecognition),
+          color: colorSwitch(board),
         ),
       ),
     );
