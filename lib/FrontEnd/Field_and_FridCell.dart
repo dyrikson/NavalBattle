@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nv/logic.dart';
+import 'package:nv/BackEnd/Game.dart';
 
 class Field extends StatelessWidget {
   final int gridSize;

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nv/BackEnd/game.dart';
+import 'package:nv/BackEnd/Game.dart';
+import 'package:nv/BackEnd/Fire.dart';
+import 'package:nv/BackEnd/Ships.dart';
+import 'package:nv/FrontEnd/Field_and_FridCell.dart';
 
 class GameBackGround extends StatelessWidget {
   const GameBackGround({super.key});

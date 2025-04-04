@@ -1,3 +1,5 @@
+import 'package:nv/BackEnd/Game.dart';
+
 class Ships {
   final List<CellState> ships = List.filled(100, CellState.empty);
   final List<CellState> shipsEnemy = List.filled(100, CellState.empty);

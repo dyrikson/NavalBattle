@@ -1,3 +1,5 @@
+import 'package:nv/BackEnd/Game.dart';
+
 class Fire {
   bool processShot(List<CellState> board, int index) {
     if (board[index] == CellState.ship) {

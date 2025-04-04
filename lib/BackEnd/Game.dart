@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:nv/BackEnd/Fire.dart';
-import 'package:nv/BackEnd/Ships.dart'
+import 'package:nv/BackEnd/Ships.dart';
 
 enum CellState { empty, ship, hit, miss }
 enum GameResult { ongoing, playerWin, playerLose }
