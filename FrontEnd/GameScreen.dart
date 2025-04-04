@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nv/logic.dart';
+import 'package:nv/backend/game.dart';
 
 class GameBackGround extends StatelessWidget {
   const GameBackGround({super.key});
