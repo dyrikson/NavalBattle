@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'package:nv/BackEnd/Fire.dart';
-import 'package:nv/BackEnd/Ships.dart';
+import 'package:nv/domain/fire.dart';
+import 'package:nv/domain/cell_state.dart';
+import 'package:nv/domain/ships.dart';
+import 'package:nv/domain/game_result.dart';
 
-enum CellState { empty, ship, hit, miss }
-enum GameResult { ongoing, playerWin, playerLose }
-
+///
+/// To be described...
 class Game {
   late final Fire fire;
   late final Ships ships;
@@ -13,11 +14,15 @@ class Game {
   final StreamController<GameResult> _gameOverController = StreamController.broadcast();
   bool _isPlayerTurn = false;
   bool _lastShotHit = false;
+  ///
+  /// ...
   Game(Fire f, Ships s) {
     this.fire = f;
     this.ships = s;
     _startGameLoop();
   }
+  ///
+  ///
   Future<void> _startGameLoop() async {
     while (!_isGameOver(ships)) {
       final (index, playerRecognition) = await _waitForPlayerShot();
@@ -37,6 +42,8 @@ class Game {
       }
     }
   }
+  ///
+  ///
   bool _isGameOver(Ships ships) {
     final playerWins = !ships.shipsEnemy.any((e) => e == CellState.ship);
     final enemyWins = !ships.ships.any((e) => e == CellState.ship);
@@ -50,15 +57,23 @@ class Game {
     }
     return false;
   }
+  ///
+  ///
   Future<(int, bool)> _waitForPlayerShot() async {
     _shotCompleter = Completer();
     return _shotCompleter.future;
   }
+  ///
+  ///
   void sendPlayerShot(int index, bool playerRecognition) {
     if (!_shotCompleter.isCompleted) {
       _shotCompleter.complete((index, playerRecognition));
     }
   }
+  ///
+  ///
   Stream<void> get onUpdate => _updateController.stream;
+  ///
+  ///
   Stream<GameResult> get onGameOver => _gameOverController.stream;
 }

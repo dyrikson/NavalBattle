@@ -1,88 +1,92 @@
 import 'package:flutter/material.dart';
-import 'package:nv/BackEnd/Game.dart';
-import 'package:nv/BackEnd/Fire.dart';
-import 'package:nv/BackEnd/Ships.dart';
-import 'package:nv/FrontEnd/Field_and_FridCell.dart';
+import 'package:nv/domain/game.dart';
+import 'package:nv/domain/fire.dart';
+import 'package:nv/domain/game_result.dart';
+import 'package:nv/domain/ships.dart';
+import 'package:nv/view/field.dart';
 
-class GameBackGround extends StatelessWidget {
-  const GameBackGround({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("assets/BattleShip.jpg"), fit: BoxFit.cover)),
-          child: const GameScreen(),
-        )
-    );
-  }
-}
-class GameScreen extends StatefulWidget{
-  const GameScreen({super.key});
+///
+/// The home page of the Game
+class HomePage extends StatefulWidget{
+  ///
+  /// The home page of the Game
+  const HomePage({super.key});
+  //
   @override
   _GameScreen createState() => _GameScreen();
 }
-class _GameScreen extends State<GameScreen> {
-  late Game game;
+//
+//
+class _GameScreen extends State<HomePage> {
+  late Game _game;
   int gridSize = 10;
-  GameResult? gameResult;
+  GameResult? _gameResult;
+  //
   @override
   void initState() {
     super.initState();
     _initializeGame();
   }
+  //
   void _initializeGame() {
-    game = Game(Fire(), Ships());
-    game.onUpdate.listen((_) => setState(() {}));
-    game.onGameOver.listen((result) {
+    _game = Game(
+      Fire(),
+      Ships()
+    );
+    _game.onUpdate.listen((_) => setState(() {}));
+    _game.onGameOver.listen((result) {
       setState(() {
-        gameResult = result;
+        _gameResult = result;
       });
     });
   }
+  //
+  //
   void _restartGame() {
     setState(() {
-      gameResult = null;
+      _gameResult = null;
       _initializeGame();
     });
   }
+  //
+  //
   @override
   Widget build(BuildContext context) {
-    if (gameResult != null) {
-      return _buildGameOverScreen();
-    }
-    return _buildGameScreen();
-  }
-  Widget _buildGameOverScreen() {
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.7),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              gameResult == GameResult.playerWin ? 'Поражение!' : 'Победа!',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 48,
-                fontWeight: FontWeight.bold,
-              ),
+      backgroundColor: Colors.black.withValues(alpha: 0.7),
+      body: (_gameResult != null)
+        ? _buildGameOverScreen()
+        : _buildGameScreen(),
+    );
+  }
+  ///
+  ///
+  Widget _buildGameOverScreen() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            _gameResult == GameResult.playerWin ? 'Поражение!' : 'Победа!',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 48,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: _restartGame,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-              ),
-              child: const Text(
-                'Играть снова',
-                style: TextStyle(fontSize: 24),
-              ),
+          ),
+          const SizedBox(height: 30),
+          ElevatedButton(
+            onPressed: _restartGame,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue,
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
             ),
-          ],
-        ),
+            child: const Text(
+              'Играть снова',
+              style: TextStyle(fontSize: 24),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -108,14 +112,14 @@ class _GameScreen extends State<GameScreen> {
                       Container(
                         width: cellSize * gridSize,
                         height: cellSize * gridSize,
-                        color: Colors.black26.withOpacity(0.5),
+                        color: Colors.black26.withValues(alpha: 0.5),
                         child: Field(
                           gridSize: 10,
                           cellSize: cellSize,
                           playerRecognition: true,
-                          board: game.ships.shipsEnemy,
+                          board: _game.ships.shipsEnemy,
                           onCellTap: (index) {
-                            game.sendPlayerShot(index, true);
+                            _game.sendPlayerShot(index, true);
                           },
                         ),
                       ),
@@ -130,14 +134,14 @@ class _GameScreen extends State<GameScreen> {
                       Container(
                         width: cellSize * gridSize,
                         height: cellSize * gridSize,
-                        color: Colors.black26.withOpacity(0.5),
+                        color: Colors.black26.withValues(alpha: 0.5),
                         child: Field(
                           gridSize: 10,
                           cellSize: cellSize,
                           playerRecognition: false,
-                          board: game.ships.ships,
+                          board: _game.ships.ships,
                           onCellTap: (index) {
-                            game.sendPlayerShot(index, false);
+                            _game.sendPlayerShot(index, false);
                           },
                         ),
                       ),

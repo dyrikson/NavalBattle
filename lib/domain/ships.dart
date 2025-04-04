@@ -1,4 +1,4 @@
-import 'package:nv/BackEnd/Game.dart';
+import 'package:nv/domain/cell_state.dart';
 
 class Ships {
   final List<CellState> ships = List.filled(100, CellState.empty);
