@@ -8,4 +8,5 @@ class Fire {
     }
     return false;
   }
+
 }
