@@ -1,58 +1,62 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+
+enum CellState { empty, ship, hit, miss }
+enum GameResult { ongoing, playerWin, playerLose }
 
 class Game {
-  final int gridSize = 10;
-  final List<bool> hits = List.generate(100, (_) => false);
-  final List<bool> hitsEnemy = List.generate(100, (_) => false);
-  bool turn = false;
-  bool gameEndFlag = false;
-  bool whichWin = false;
-  void turnChange(bool isShip, bool plaerRecognition){
-    if (!isShip && !plaerRecognition) {
-      turn = false;
-    }
-    else {
-      if(!isShip && plaerRecognition){
-        turn = true;
+  late final Fire fire;
+  late final Ships ships;
+  Completer<(int, bool)> _shotCompleter = Completer();
+  final StreamController<void> _updateController = StreamController.broadcast();
+  final StreamController<GameResult> _gameOverController = StreamController.broadcast();
+  bool _isPlayerTurn = false;
+  bool _lastShotHit = false;
+  Game(Fire f, Ships s) {
+    this.fire = f;
+    this.ships = s;
+    _startGameLoop();
+  }
+  Future<void> _startGameLoop() async {
+    while (!_isGameOver(ships)) {
+      final (index, playerRecognition) = await _waitForPlayerShot();
+      if(playerRecognition && _isPlayerTurn) {
+        _lastShotHit = fire.processShot(ships.shipsEnemy, index);
+        _updateController.add(null);
+        if (!_lastShotHit) {
+          _isPlayerTurn = false;
+        }
+      }
+      else if(!playerRecognition && !_isPlayerTurn) {
+        _lastShotHit = fire.processShot(ships.ships, index);
+        _updateController.add(null);
+        if (!_lastShotHit) {
+          _isPlayerTurn = true;
+        }
       }
     }
   }
-  void turnCheck(int index, Ships ship, bool playerRecognition) {
-    if (!playerRecognition) {
-      hitsEnemy[index] = true;
-      bool isShip = ship.ships[index];
-      if (gameEnd(ship.ships, hitsEnemy, whichWin, false)) {
-        gameEndFlag = true;
-      }
-      turnChange(isShip, playerRecognition);
-    }
-    else {
-      hits[index] = true;
-      bool isShip = ship.shipsEnemy[index];
-      if(gameEnd(ship.shipsEnemy, hits, whichWin, true)) {
-        gameEndFlag = true;
-      }
-      turnChange(isShip, playerRecognition);
-    }
-  }
-  bool gameEnd(List<bool> hits, List<bool> ships, bool whichWin, bool playerRecognition){
-    int countOfHits = 0;
-    for(int index = 0; index < 100; index++) {
-      if(ships[index] && hits[index]){
-        countOfHits++;
-      }
-    }
-    if (countOfHits == 20 && playerRecognition) {
-      this.whichWin = true;
+  bool _isGameOver(Ships ships) {
+    final playerWins = !ships.shipsEnemy.any((e) => e == CellState.ship);
+    final enemyWins = !ships.ships.any((e) => e == CellState.ship);
+
+    if (playerWins) {
+      _gameOverController.add(GameResult.playerWin);
+      return true;
+    } else if (enemyWins) {
+      _gameOverController.add(GameResult.playerLose);
       return true;
     }
-    else {
-      if(countOfHits == 20 && !playerRecognition) {
-        this.whichWin = false;
-        return true;
-      }
-    }
-    countOfHits = 0;
     return false;
   }
+  Future<(int, bool)> _waitForPlayerShot() async {
+    _shotCompleter = Completer();
+    return _shotCompleter.future;
+  }
+  void sendPlayerShot(int index, bool playerRecognition) {
+    if (!_shotCompleter.isCompleted) {
+      _shotCompleter.complete((index, playerRecognition));
+    }
+  }
+  Stream<void> get onUpdate => _updateController.stream;
+  Stream<GameResult> get onGameOver => _gameOverController.stream;
 }
