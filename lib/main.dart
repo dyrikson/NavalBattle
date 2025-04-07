@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nv/FrontEnd/GameScreen.dart';
-
-void main() => runApp(const GameBackGround());
+import 'package:nv/view/app_widget.dart';
+///
+/// Application entry point
+void main() => runApp(const AppWidget());
