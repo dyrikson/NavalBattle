@@ -93,7 +93,9 @@ class _HomePage extends State<HomePage> {
                               final (result, index) = _game.shoot(x, y);
                               if (result == ShootResult.win) {
                                 _state = GameState.end;
-                                _win = true;
+                                setState(() {
+                                  _win = true;
+                                });
                               } else {
                                 print('HomePage.build | index: $index');
                                 setState(() {
@@ -132,7 +134,9 @@ class _HomePage extends State<HomePage> {
                               final (result, index) = _game.shoot(x, y);
                               if (result == ShootResult.win) {
                                 _state = GameState.end;
-                                _win = false;
+                                setState(() {
+                                  _win = false;
+                                });
                               } else {
                                 print('HomePage.build | index: $index');
                                 setState(() {
