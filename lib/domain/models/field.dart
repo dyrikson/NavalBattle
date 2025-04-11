@@ -18,12 +18,12 @@ class Field {
   Field.user(int width, int height, int ships):
     _ships = ships,
     _cells = [
-      [Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,],
+      [Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.ship,Cell.ship,Cell.empty,],
       [Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,],
       [Cell.empty,Cell.ship,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,],
       [Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,],
       [Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,],
-      [Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,],
+      [Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.ship,Cell.empty,Cell.empty,Cell.ship,Cell.empty,Cell.ship,],
       [Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,],
       [Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,],
       [Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,Cell.empty,],
