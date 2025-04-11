@@ -92,8 +92,8 @@ class _HomePage extends State<HomePage> {
                             onTap: (x, y) {
                               final (result, index) = _game.shoot(x, y);
                               if (result == ShootResult.win) {
-                                _state = GameState.end;
                                 setState(() {
+                                  _state = GameState.end;
                                   _win = true;
                                 });
                               } else {
@@ -133,8 +133,8 @@ class _HomePage extends State<HomePage> {
                             onTap: (x, y) {
                               final (result, index) = _game.shoot(x, y);
                               if (result == ShootResult.win) {
-                                _state = GameState.end;
                                 setState(() {
+                                  _state = GameState.end;
                                   _win = false;
                                 });
                               } else {
