@@ -1,46 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:nv/domain/models/cell_state.dart';
-import 'package:nv/view/grid_cell_widget.dart';
+import 'package:nv/domain/models/cell.dart';
+import 'package:nv/domain/models/shoot_result.dart';
+import 'package:nv/view/cell_widget.dart';
 ///
 /// Displays a game field grid with interactive cells.
-/// Manages the layout and delegates cell rendering to [GridCell].
-class Field extends StatelessWidget {
-  final int gridSize;
+/// Manages the layout and delegates cell rendering to [CellWidget].
+class FieldWidget extends StatelessWidget {
+  final Size size;
   final double cellSize;
-  final bool playerRecognition;
-  final List<CellState> board;
-  final void Function(int) onCellTap;
-  //
-  // Creates a game field grid
-  // [gridSize] - Size of the grid (number of cells per row/column)
-  // [cellSize] - Size of each individual cell in logical pixels
-  // [playerRecognition] - Whether this field belongs to the player (true) or enemy (false)
-  // [board] - Current state of all cells in the grid
-  // [onCellTap] - Callback when a cell is tapped, provides cell index
-  const Field({
+  final List<List<Cell>> cells;
+  final ShootResult Function(int, int) onTap;
+  ///
+  /// Creates a game field grid
+  /// [size] - Size of the grid (number of cells per row/column)
+  /// [cellSize] - Size of each individual cell in logical pixels
+  /// [onTap] - Callback when a cell is tapped, provides cell index
+  /// [cells] - Current state of all cells in the grid
+  const FieldWidget({
     super.key,
-    required this.gridSize,
+    required this.size,
     required this.cellSize,
-    required this.playerRecognition,
-    required this.onCellTap,
-    required this.board,
+    required this.onTap,
+    required this.cells,
   });
-  // Builds a square grid of [GridCell] widgets
+  //
+  //
   @override
   Widget build(BuildContext context) {
+    final count = size.width.toInt() * size.height.toInt();
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: gridSize,
+        crossAxisCount: size.width.toInt(),
         childAspectRatio: 1.0,
       ),
-      itemCount: gridSize * gridSize,
+      itemCount: count,
       itemBuilder: (context, index) {
-        return GridCell(
-          index: index,
+        final x = index.remainder(size.width).round();
+        final y = index ~/ size.width;
+        final cell = cells[x][y];
+        // print('FieldWidget.build | x: $x, y: $y, cell: $cell, size: $cellSize');
+        return CellWidget(
           size: cellSize,
-          playerRecognition: playerRecognition,
-          board: board,
-          onTap: () => onCellTap(index),
+          xy: (x, y),
+          cell: cell,
+          onTap: (x, y) => onTap(x, y),
         );
       },
     );
