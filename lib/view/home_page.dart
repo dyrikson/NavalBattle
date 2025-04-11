@@ -1,48 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:nv/domain/game.dart';
-import 'package:nv/domain/services/shooting_service.dart';
-import 'package:nv/domain/models/game_status.dart';
-import 'package:nv/domain/models/ships.dart';
+import 'package:nv/domain/models/field.dart';
+import 'package:nv/domain/models/shoot_result.dart';
 import 'package:nv/view/field_widget.dart';
-import 'package:nv/view/endgame_page.dart';
 ///
 /// The home page of the Game
 class HomePage extends StatefulWidget {
+  final Size size;
   ///
   /// The home page of the Game
-  const HomePage({super.key});
+  const HomePage({
+    super.key,
+    this.size = const Size(10, 10),
+  });
+  //
+  //
   @override
-  _HomePage createState() => _HomePage();
+  State<HomePage> createState() => _HomePage();
 }
+//
+//
 class _HomePage extends State<HomePage> {
+  ShootResult _status = ShootResult.miss;
   late Game _game;
-  late final int _gridSize;
-  GameStatus? gameStatus;
+  int _index = 0;
+  // //
+  // // Handles player's move
+  // // [position] - Grid position of the move
+  // // [playerRecognition] - Flag indicating who made the move (player/enemy)
+  // void _handlePlayerMove(int position, bool playerRecognition) {
+  //   setState(() {
+  //     _game.gameTurn(position, playerRecognition);
+  //     gameStatus = _game.status;
+  //   });
+  // }
   //
-  // Initializes the main page state
-  // [_gridSize] - Size of the game grid (default 10x10)
-  _HomePage() {
-    _gridSize = 10;
-  }
   //
-  // Handles player's move
-  // [position] - Grid position of the move
-  // [playerRecognition] - Flag indicating who made the move (player/enemy)
-  void _handlePlayerMove(int position, bool playerRecognition) {
-    setState(() {
-      _game.gameTurn(position, playerRecognition);
-      gameStatus = _game.status;
-    });
-  }
   @override
   void initState() {
+    _game = Game([
+      Field.user(10, 10, 10),
+      Field.comp(10, 10, 10),
+    ]);
     super.initState();
-    _initializeGame();
-  }
-  //
-  // Initializes a new game with empty boards
-  void _initializeGame() {
-    _game = Game(Fire(), Ships());
   }
   //
   // Restarts the game by resetting all states
@@ -54,13 +54,12 @@ class _HomePage extends State<HomePage> {
   /// Builds a widget that implements a transition to the end game page.
   @override
   Widget build(BuildContext context) {
-    if (gameStatus == GameStatus.playerLose ||
-        gameStatus == GameStatus.playerWin) {
-      return EndGamePage(
-        gameResult: gameStatus,
-        onRestart: _restartGame,
-      );
-    }
+    // if (_status == ShootResult.win) {
+    //   return EndGamePage(
+    //     gameResult: gameStatus,
+    //     onRestart: _restartGame,
+    //   );
+    // }
     return _homePage();
   }
   /// Builds the main game interface with two battlefields
@@ -68,7 +67,7 @@ class _HomePage extends State<HomePage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         double availableWidth = constraints.maxWidth - 250;
-        double cellSize = availableWidth / (_gridSize * 2);
+        double cellSize = availableWidth / (widget.size.width * widget.size.height);
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -85,16 +84,19 @@ class _HomePage extends State<HomePage> {
                         child: Text("Player Field"),
                       ),
                       Container(
-                        width: cellSize * _gridSize,
-                        height: cellSize * _gridSize,
-                        color: Colors.black26.withOpacity(0.5),
-                        child: Field(
-                          gridSize: 10,
+                        width: cellSize * widget.size.width,
+                        height: cellSize * widget.size.height,
+                        color: Colors.black26.withValues(alpha: 0.5),
+                        child: FieldWidget(
+                          size: widget.size,
                           cellSize: cellSize,
-                          playerRecognition: true,
-                          board: _game.ships.shipsEnemy,
-                          onCellTap: (index) {
-                            _handlePlayerMove(index, true);
+                          cells: _game.cells(0),
+                          onTap: (x, y) {
+                            final (result, index) = _game.shoot(x, y);
+                            setState(() {
+                              _index = index;
+                            });
+                            return result;
                           },
                         ),
                       ),
@@ -108,16 +110,19 @@ class _HomePage extends State<HomePage> {
                         child: Text("Enemy Field"),
                       ),
                       Container(
-                        width: cellSize * _gridSize,
-                        height: cellSize * _gridSize,
-                        color: Colors.black26.withOpacity(0.5),
-                        child: Field(
-                          gridSize: 10,
+                        width: cellSize * widget.size.width,
+                        height: cellSize * widget.size.height,
+                        color: Colors.black26.withValues(alpha: 0.5),
+                        child: FieldWidget(
+                          size: widget.size,
                           cellSize: cellSize,
-                          playerRecognition: false,
-                          board: _game.ships.ships,
-                          onCellTap: (index) {
-                            _handlePlayerMove(index, false);
+                          cells: _game.cells(0),
+                          onTap: (x, y) {
+                            final (result, index) = _game.shoot(x, y);
+                            setState(() {
+                              _index = index;
+                            });
+                            return result;
                           },
                         ),
                       ),

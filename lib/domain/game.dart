@@ -1,59 +1,37 @@
-import 'package:nv/domain/models/cell_state.dart';
-import 'package:nv/domain/models/game_status.dart';
-import 'package:nv/domain/services/shooting_service.dart';
-import 'package:nv/domain/models/ships.dart';
+import 'package:nv/domain/models/cell.dart';
+import 'package:nv/domain/models/field.dart';
+import 'package:nv/domain/models/shoot_result.dart';
 ///
 /// Manages game flow, turns, and win/lose conditions for battleship game.
 /// Handles player/enemy turns and tracks game state.
 class Game {
-  late final Fire fire;
-  late final Ships ships;
-  late int _lastPlayerMove;
-  late bool _player;
-  GameStatus status = GameStatus.ongoing;
-  bool _isPlayerTurn = false;
-  bool _lastShotHit = false;
-  //
-  // Initializes game with shooting service and ship configurations
-  Game(Fire f, Ships s) {
-    this.fire = f;
-    this.ships = s;
-  }
-  //
-  // Processes a game turn for player or enemy
-  // [position] - cell index being shot at
-  // [playerRecognition] - identifies if move is made by player
-  void gameTurn(int position, bool playerRecognition) {
-    _lastPlayerMove = position;
-    _player = playerRecognition;
-    if (!_isGameOver(ships)) {
-      if(_player && _isPlayerTurn) {
-        _lastShotHit = fire.shoot(ships.shipsEnemy, _lastPlayerMove);
-        if (!_lastShotHit) {
-          _isPlayerTurn = false;
-        }
-      }
-      else if(!_player && !_isPlayerTurn) {
-        _lastShotHit = fire.shoot(ships.ships, _lastPlayerMove);
-        if (!_lastShotHit) {
-          _isPlayerTurn = true;
-        }
+  final List<Field> _fields;
+  int _index = 0;
+  ///
+  /// Initializes game with [Field]'s of mambers,
+  /// which contains areas of ships
+  Game(List<Field> fields):
+    _fields = fields;
+  ///
+  /// Makes a game step, shooting to the following [Field]
+  ///
+  /// The shoot to this field with [x] and [y] of cell
+  /// - Returns `Cell.hit` if ship was under the [x] and [y]
+  /// - Returns `Cell.win` if last ship was shootted
+  /// - Returns `Cell.miss` if `empty` or `hit` was under the [x] and [y]
+  (ShootResult, int) shoot(x, y) {
+    final result = _fields[_index].shoot(x, y);
+    if (result != ShootResult.hit) {
+      _index++;
+      if (_index > _fields.length) {
+        _index = 0;
       }
     }
+    return (result, _index);
   }
-  //
-  // Checks if game should end (all ships sunk)
-  bool _isGameOver(Ships ships) {
-    final playerWins = !ships.shipsEnemy.any((e) => e == CellState.ship);
-    final enemyWins = !ships.ships.any((e) => e == CellState.ship);
-    if (playerWins && _player) {
-      status = GameStatus.playerWin;
-      return true;
-    }
-    else if(enemyWins && !_player) {
-      status = GameStatus.playerLose;
-      return true;
-    }
-    return false;
+  ///
+  ///
+  List<List<Cell>> cells(index) {
+    return _fields[index].cells;
   }
 }
