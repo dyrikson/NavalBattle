@@ -92,8 +92,7 @@ class _HomePage extends State<HomePage> {
                         child: Container(
                           width: cellSize * widget.size.width,
                           height: cellSize * widget.size.height,
-                          color: Colors.yellow.withValues(alpha: 0.5),
-                          // color: Colors.black26.withValues(alpha: 0.5),
+                          color: Colors.black26.withValues(alpha: 0.5),
                           child: FieldWidget(
                             size: widget.size,
                             cellSize: cellSize,
@@ -127,8 +126,7 @@ class _HomePage extends State<HomePage> {
                         child: Container(
                           width: cellSize * widget.size.width,
                           height: cellSize * widget.size.height,
-                          color: Colors.orange.withValues(alpha: 0.5),
-                          // color: Colors.black26.withValues(alpha: 0.5),
+                          color: Colors.black26.withValues(alpha: 0.5),
                           child: FieldWidget(
                             size: widget.size,
                             cellSize: cellSize,

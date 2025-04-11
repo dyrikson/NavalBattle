@@ -53,22 +53,25 @@ class _CellWidgetState extends State<CellWidget> {
   //
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        print("CellWidget.onTap | x: ${widget.xy.$1}, y: ${widget.xy.$2}, size: ${widget.size}");
-        final result = widget.onTap(widget.xy.$1, widget.xy.$2);
-        if (result == ShootResult.hit) {
-          _color = Colors.red;
-        } else if (result == ShootResult.miss) {
-          _color = Colors.white;
-        }
-      },
-      child: Container(
-        width: widget.size,
-        height: widget.size,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.black, width: 1.2),
-          color: _color,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {
+          print("CellWidget.onTap | x: ${widget.xy.$1}, y: ${widget.xy.$2}, size: ${widget.size}");
+          final result = widget.onTap(widget.xy.$1, widget.xy.$2);
+          if (result == ShootResult.hit) {
+            _color = Colors.red;
+          } else if (result == ShootResult.miss) {
+            _color = Colors.white;
+          }
+        },
+        child: Container(
+          width: widget.size,
+          height: widget.size,
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 1.2),
+            color: _color,
+          ),
         ),
       ),
     );
