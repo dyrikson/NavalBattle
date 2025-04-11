@@ -99,10 +99,14 @@ class _HomePage extends State<HomePage> {
                             cells: _game.cells(1),
                             onTap: (x, y) {
                               final (result, index) = _game.shoot(x, y);
-                              _index = index;
-                              print('HomePage.build | index: $index');
-                              setState(() {
-                              });
+                              if (result == ShootResult.win) {
+                                _restartGame();
+                              } else {
+                                print('HomePage.build | index: $index');
+                                setState(() {
+                                  _index = index;
+                                });
+                              }
                               return result;
                             },
                           ),
@@ -133,10 +137,14 @@ class _HomePage extends State<HomePage> {
                             cells: _game.cells(0),
                             onTap: (x, y) {
                               final (result, index) = _game.shoot(x, y);
-                              _index = index;
-                              print('HomePage.build | index: $index');
-                              setState(() {
-                              });
+                              if (result == ShootResult.win) {
+                                _restartGame();
+                              } else {
+                                print('HomePage.build | index: $index');
+                                setState(() {
+                                  _index = index;
+                                });
+                              }
                               return result;
                             },
                           ),
