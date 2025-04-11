@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:nv/domain/models/game_status.dart';
 ///
 /// Displays end game screen with result (win/lose) and restart button.
-/// Shows different messages based on [gameResult] status.
+/// Shows different messages based on [win] status.
 class EndGamePage extends StatelessWidget {
-  final GameStatus? gameResult;
-  final VoidCallback onRestart;
+  final bool win;
+  final Function() onDone;
   //
   // [gameResult] - determines which message to show
   // [onRestart] - callback when restart button is pressed
   const EndGamePage({
     super.key,
-    required this.gameResult,
-    required this.onRestart,
+    required this.win,
+    required this.onDone,
   });
   //
   // Builds the UI with game result message and restart button
@@ -23,7 +22,7 @@ class EndGamePage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            gameResult == GameStatus.playerWin ? 'Поражение!' : 'Победа!',
+            win ? 'Победа!' : 'Поражение!',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 48,
@@ -32,11 +31,13 @@ class EndGamePage extends StatelessWidget {
           ),
           const SizedBox(height: 30),
           ElevatedButton(
-            onPressed: onRestart,
+            onPressed: () => onDone(),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue,
               padding: const EdgeInsets.symmetric(
-                  horizontal: 30, vertical: 15),
+                horizontal: 30,
+                vertical: 15,
+              ),
             ),
             child: const Text(
               'Играть снова',

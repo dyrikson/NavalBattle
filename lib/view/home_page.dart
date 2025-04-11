@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nv/domain/game.dart';
 import 'package:nv/domain/models/field.dart';
 import 'package:nv/domain/models/shoot_result.dart';
+import 'package:nv/view/endgame_page.dart';
 import 'package:nv/view/field_widget.dart';
 ///
 /// The home page of the Game
@@ -21,50 +22,41 @@ class HomePage extends StatefulWidget {
 //
 //
 class _HomePage extends State<HomePage> {
-  ShootResult _status = ShootResult.miss;
   late Game _game;
+  GameState _state = GameState.end;
   int _index = 0;
-  // //
-  // // Handles player's move
-  // // [position] - Grid position of the move
-  // // [playerRecognition] - Flag indicating who made the move (player/enemy)
-  // void _handlePlayerMove(int position, bool playerRecognition) {
-  //   setState(() {
-  //     _game.gameTurn(position, playerRecognition);
-  //     gameStatus = _game.status;
-  //   });
-  // }
+  bool _win = false;
   //
   //
   @override
   void initState() {
+    _newGame();
+    super.initState();
+  }
+  ///
+  ///
+  _newGame() {
+    _index = 0;
+    _state = GameState.game;
+    _win = false;
     _game = Game([
       Field.user(10, 10, 10),
       Field.comp(10, 10, 10),
     ]);
-    super.initState();
   }
   //
-  // Restarts the game by resetting all states
-  void _restartGame() {
-    setState(() {
-      initState();
-    });
-  }
-  /// Builds a widget that implements a transition to the end game page.
+  //
   @override
   Widget build(BuildContext context) {
-    // if (_status == ShootResult.win) {
-    //   return EndGamePage(
-    //     gameResult: gameStatus,
-    //     onRestart: _restartGame,
-    //   );
-    // }
-    return _homePage();
-  }
-  /// Builds the main game interface with two battlefields
-  Widget _homePage() {
-    return LayoutBuilder(
+    return _state == GameState.end
+    ? EndGamePage(
+      win: _win,
+      onDone: () {
+        _newGame();
+        setState(() {});
+      },
+    )
+    : LayoutBuilder(
       builder: (context, constraints) {
         double availableWidth = constraints.maxWidth - 250;
         double cellSize = availableWidth / (widget.size.width * 2);
@@ -100,7 +92,8 @@ class _HomePage extends State<HomePage> {
                             onTap: (x, y) {
                               final (result, index) = _game.shoot(x, y);
                               if (result == ShootResult.win) {
-                                _restartGame();
+                                _state = GameState.end;
+                                _win = true;
                               } else {
                                 print('HomePage.build | index: $index');
                                 setState(() {
@@ -138,7 +131,8 @@ class _HomePage extends State<HomePage> {
                             onTap: (x, y) {
                               final (result, index) = _game.shoot(x, y);
                               if (result == ShootResult.win) {
-                                _restartGame();
+                                _state = GameState.end;
+                                _win = false;
                               } else {
                                 print('HomePage.build | index: $index');
                                 setState(() {
@@ -160,4 +154,10 @@ class _HomePage extends State<HomePage> {
       },
     );
   }
+}
+///
+///
+enum GameState {
+  game,
+  end,
 }
