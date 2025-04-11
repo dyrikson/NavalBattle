@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 class EndGamePage extends StatelessWidget {
   final bool win;
   final Function() onDone;
-  //
-  // [gameResult] - determines which message to show
-  // [onRestart] - callback when restart button is pressed
+  ///
+  /// [gameResult] - determines which message to show
+  /// [onRestart] - callback when restart button is pressed
   const EndGamePage({
     super.key,
     required this.win,
     required this.onDone,
   });
   //
-  // Builds the UI with game result message and restart button
+  //
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -24,7 +24,7 @@ class EndGamePage extends StatelessWidget {
           Text(
             win ? 'Победа!' : 'Поражение!',
             style: const TextStyle(
-              color: Colors.white,
+              color: Colors.black,
               fontSize: 48,
               fontWeight: FontWeight.bold,
             ),
