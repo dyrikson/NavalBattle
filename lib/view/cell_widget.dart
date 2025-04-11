@@ -28,9 +28,9 @@ class CellWidget extends StatefulWidget {
   static Color _colorSwitch(Cell cell) {
     switch (cell) {
       case Cell.empty: return Colors.transparent;
-      case Cell.ship: return Colors.grey;
+      case Cell.ship: return Colors.blue;
       case Cell.hit: return Colors.red;
-      case Cell.miss: return Colors.white;
+      case Cell.miss: return Colors.grey;
     }
   }
   //
@@ -55,6 +55,7 @@ class _CellWidgetState extends State<CellWidget> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        print("CellWidget.onTap | x: ${widget.xy.$1}, y: ${widget.xy.$2}, size: ${widget.size}");
         final result = widget.onTap(widget.xy.$1, widget.xy.$2);
         if (result == ShootResult.hit) {
           _color = Colors.red;

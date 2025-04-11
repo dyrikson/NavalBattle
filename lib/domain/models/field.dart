@@ -34,7 +34,7 @@ class Field {
   /// User of kind Computer
   Field.comp(int width, int height, int ships):
     _ships = ships,
-    _cells = chunk(List.filled(width * height, Cell.empty), width);
+    _cells = shipsInitialize(chunk(List.filled(width * height, Cell.empty), width));
   ///
   /// The shoot to this field with [x] and [y] of cell
   /// - Returns `Cell.hit` if ship was under the [x] and [y]

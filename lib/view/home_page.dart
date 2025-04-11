@@ -67,7 +67,7 @@ class _HomePage extends State<HomePage> {
     return LayoutBuilder(
       builder: (context, constraints) {
         double availableWidth = constraints.maxWidth - 250;
-        double cellSize = availableWidth / (widget.size.width * widget.size.height);
+        double cellSize = availableWidth / (widget.size.width * 2);
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -79,25 +79,34 @@ class _HomePage extends State<HomePage> {
                   // Player's battlefield
                   Column(
                     children: [
-                      const DefaultTextStyle(
-                        style: TextStyle(color: Colors.black, fontSize: 40),
-                        child: Text("Player Field"),
+                      DefaultTextStyle(
+                        style: TextStyle(
+                          color: _index == 1 ? Colors.black : Colors.grey, 
+                          fontSize: 40,
+                          fontWeight: _index == 1 ? FontWeight.bold : FontWeight.normal,
+                        ),
+                        child: const Text("Player Field"),
                       ),
-                      Container(
-                        width: cellSize * widget.size.width,
-                        height: cellSize * widget.size.height,
-                        color: Colors.black26.withValues(alpha: 0.5),
-                        child: FieldWidget(
-                          size: widget.size,
-                          cellSize: cellSize,
-                          cells: _game.cells(0),
-                          onTap: (x, y) {
-                            final (result, index) = _game.shoot(x, y);
-                            setState(() {
+                      AbsorbPointer(
+                        absorbing: _index != 1,
+                        child: Container(
+                          width: cellSize * widget.size.width,
+                          height: cellSize * widget.size.height,
+                          color: Colors.yellow.withValues(alpha: 0.5),
+                          // color: Colors.black26.withValues(alpha: 0.5),
+                          child: FieldWidget(
+                            size: widget.size,
+                            cellSize: cellSize,
+                            cells: _game.cells(1),
+                            onTap: (x, y) {
+                              final (result, index) = _game.shoot(x, y);
                               _index = index;
-                            });
-                            return result;
-                          },
+                              print('HomePage.build | index: $index');
+                              setState(() {
+                              });
+                              return result;
+                            },
+                          ),
                         ),
                       ),
                     ],
@@ -105,25 +114,34 @@ class _HomePage extends State<HomePage> {
                   // Enemy's battlefield
                   Column(
                     children: [
-                      const DefaultTextStyle(
-                        style: TextStyle(color: Colors.black, fontSize: 40),
-                        child: Text("Enemy Field"),
+                      DefaultTextStyle(
+                        style: TextStyle(
+                          color: _index == 0 ? Colors.black : Colors.grey, 
+                          fontSize: 40,
+                          fontWeight: _index == 0 ? FontWeight.bold : FontWeight.normal,
+                        ),
+                        child: const Text("Enemy Field"),
                       ),
-                      Container(
-                        width: cellSize * widget.size.width,
-                        height: cellSize * widget.size.height,
-                        color: Colors.black26.withValues(alpha: 0.5),
-                        child: FieldWidget(
-                          size: widget.size,
-                          cellSize: cellSize,
-                          cells: _game.cells(0),
-                          onTap: (x, y) {
-                            final (result, index) = _game.shoot(x, y);
-                            setState(() {
+                      AbsorbPointer(
+                        absorbing: _index != 0,
+                        child: Container(
+                          width: cellSize * widget.size.width,
+                          height: cellSize * widget.size.height,
+                          color: Colors.orange.withValues(alpha: 0.5),
+                          // color: Colors.black26.withValues(alpha: 0.5),
+                          child: FieldWidget(
+                            size: widget.size,
+                            cellSize: cellSize,
+                            cells: _game.cells(0),
+                            onTap: (x, y) {
+                              final (result, index) = _game.shoot(x, y);
                               _index = index;
-                            });
-                            return result;
-                          },
+                              print('HomePage.build | index: $index');
+                              setState(() {
+                              });
+                              return result;
+                            },
+                          ),
                         ),
                       ),
                     ],

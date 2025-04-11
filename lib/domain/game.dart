@@ -23,7 +23,7 @@ class Game {
     final result = _fields[_index].shoot(x, y);
     if (result != ShootResult.hit) {
       _index++;
-      if (_index > _fields.length) {
+      if (_index >= _fields.length) {
         _index = 0;
       }
     }

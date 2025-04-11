@@ -30,7 +30,7 @@ class FieldWidget extends StatelessWidget {
     final count = size.width.toInt() * size.height.toInt();
     return GridView.builder(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: count,
+        crossAxisCount: size.width.toInt(),
         childAspectRatio: 1.0,
       ),
       itemCount: count,
@@ -38,8 +38,7 @@ class FieldWidget extends StatelessWidget {
         final x = index.remainder(size.width).round();
         final y = index ~/ size.width;
         final cell = cells[x][y];
-        print('x: $y, y: $y');
-        print('cell: $cell');
+        // print('FieldWidget.build | x: $x, y: $y, cell: $cell, size: $cellSize');
         return CellWidget(
           size: cellSize,
           xy: (x, y),
